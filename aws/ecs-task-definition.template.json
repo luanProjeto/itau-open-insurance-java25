@@ -1,0 +1,52 @@
+{
+  "family": "insurance-patrimonial",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "REPLACE_EXECUTION_ROLE_ARN",
+  "taskRoleArn": "REPLACE_TASK_ROLE_ARN",
+  "containerDefinitions": [
+    {
+      "name": "insurance-api",
+      "image": "REPLACE_ECR_IMAGE_URI",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "aws"
+        },
+        {
+          "name": "DB_URL",
+          "value": "jdbc:postgresql://REPLACE_RDS_ENDPOINT:5432/insurance"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "DB_USER",
+          "valueFrom": "REPLACE_DB_USER_SECRET_ARN"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "valueFrom": "REPLACE_DB_PASSWORD_SECRET_ARN"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/insurance-patrimonial",
+          "awslogs-region": "REPLACE_AWS_REGION",
+          "awslogs-stream-prefix": "api"
+        }
+      }
+    }
+  ]
+}
